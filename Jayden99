@@ -878,8 +878,6 @@ local State = {
 local Misc = {
     Speed = 100,       -- walkspeed % (100 = normal)
     InfJump = false,
-    PathGlide = true, -- click/tap 1-click A* Pathfind TP
-    TpDelay = 70,      -- delay (ms) between A* tile steps (~67 ms = 1 tile per native 15 Hz sync)
     CustomName = true,          -- name watermark (always on, removed only when script closes)
     NameText = "Fian792",  -- watermark text
 }
@@ -3453,27 +3451,6 @@ local function hazardAt(x, y)
     local it = fgItemAt(x, y)
     return it ~= nil and (it.deadly or it.hurts or it.laser) and true or false
 end
-
--- Safe A* Pathfind TP (1-click tile-by-tile synced step, never passes through solid or hazardous tiles)
-do (function()
-    local guiSvc = game:GetService("GuiService")
-    local floor, abs, sqrt = math.floor, math.abs, math.sqrt
-    local pg = {
-        active = false,
-        token = 0,
-        gx = nil,
-        gy = nil,
-        curX = nil,
-        curY = nil,
-        vx = 0,
-        vy = 0,
-        facing = 1,
-        rollbacks = 0,
-        wroteOnce = false,
-        world = nil,
-        fg = nil,
-    }
-    Session.PathGlide = pg
 
     local function groundBelow(tx, ty)
         if solidAt(tx, ty + 1) then return true end
